@@ -41,6 +41,15 @@ const testAttachmentBodyString = "My name is Mitsuha."
 
 const testAttachmentString = testAttachmentHeaderString + testAttachmentBodyString
 
+const testGIFHeaderString = "Content-Disposition: attachment; filename=\"1x1.gif\"\r\n" +
+	"Content-Transfer-Encoding: base64\r\n" +
+	"Content-Type: image/gif\r\n" +
+	"\r\n"
+
+const testGIFBodyString = `R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7`
+
+const testGIFString = testGIFHeaderString + testGIFBodyString
+
 const testBodyString = "--message-boundary\r\n" +
 	testAltHeaderString +
 	"\r\n--b2\r\n" +
@@ -50,6 +59,8 @@ const testBodyString = "--message-boundary\r\n" +
 	"\r\n--b2--\r\n" +
 	"\r\n--message-boundary\r\n" +
 	testAttachmentString +
+	"\r\n--message-boundary\r\n" +
+	testGIFString +
 	"\r\n--message-boundary--\r\n"
 
 const testMailString = testHeaderString + testBodyString

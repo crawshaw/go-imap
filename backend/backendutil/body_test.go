@@ -62,7 +62,7 @@ var bodyTests = []struct {
 		body:    "",
 	},
 	{
-		section: "BODY[3]",
+		section: "BODY[4]",
 		body:    "",
 	},
 	{
