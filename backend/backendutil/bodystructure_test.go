@@ -24,6 +24,7 @@ var testBodyStructure = &imap.BodyStructure{
 					MIMEType:          "text",
 					MIMESubType:       "plain",
 					Params:            map[string]string{},
+					Size:              uint32(len(testTextBodyString)),
 					Extended:          true,
 					Disposition:       "inline",
 					DispositionParams: map[string]string{},
@@ -32,6 +33,7 @@ var testBodyStructure = &imap.BodyStructure{
 					MIMEType:          "text",
 					MIMESubType:       "html",
 					Params:            map[string]string{},
+					Size:              uint32(len(testHTMLBodyString)),
 					Extended:          true,
 					Disposition:       "inline",
 					DispositionParams: map[string]string{},
@@ -42,6 +44,7 @@ var testBodyStructure = &imap.BodyStructure{
 			MIMEType:          "text",
 			MIMESubType:       "plain",
 			Params:            map[string]string{},
+			Size:              uint32(len(testAttachmentBodyString)),
 			Extended:          true,
 			Disposition:       "attachment",
 			DispositionParams: map[string]string{"filename": "note.txt"},
@@ -51,6 +54,7 @@ var testBodyStructure = &imap.BodyStructure{
 			MIMESubType:       "gif",
 			Params:            map[string]string{},
 			Encoding:          "base64",
+			Size:              uint32(len(testGIFBodyString)),
 			Extended:          true,
 			Disposition:       "attachment",
 			DispositionParams: map[string]string{"filename": "1x1.gif"},
@@ -72,6 +76,5 @@ func TestFetchBodyStructure(t *testing.T) {
 
 	if !reflect.DeepEqual(testBodyStructure, bs) {
 		t.Errorf("Expected body structure \n%+v\n but got \n%+v", testBodyStructure, bs)
-		t.Logf("%+v", bs.Parts[2])
 	}
 }

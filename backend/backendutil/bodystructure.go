@@ -27,7 +27,6 @@ func FetchBodyStructure(e *message.Entity, extended bool) (*imap.BodyStructure, 
 	bs.Id = e.Header.Get("Content-Id")
 	bs.Description = e.Header.Get("Content-Description")
 	bs.Encoding = e.Header.Get("Content-Transfer-Encoding")
-	// TODO: bs.Size
 
 	if mr := e.MultipartReader(); mr != nil {
 		var parts []*imap.BodyStructure
@@ -46,6 +45,11 @@ func FetchBodyStructure(e *message.Entity, extended bool) (*imap.BodyStructure, 
 			parts = append(parts, pbs)
 		}
 		bs.Parts = parts
+		// TODO: bs.Size
+	} else {
+		var sz int64
+		sz, err = message.EncodedSize(bs.Encoding, e.Body)
+		bs.Size = uint32(sz)
 	}
 
 	// TODO: bs.Envelope, bs.BodyStructure
@@ -60,5 +64,5 @@ func FetchBodyStructure(e *message.Entity, extended bool) (*imap.BodyStructure, 
 		// TODO: bs.MD5
 	}
 
-	return bs, nil
+	return bs, err
 }
