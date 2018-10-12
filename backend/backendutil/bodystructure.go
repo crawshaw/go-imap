@@ -1,6 +1,7 @@
 package backendutil
 
 import (
+	"fmt"
 	"io"
 	"strings"
 
@@ -12,7 +13,10 @@ import (
 func FetchBodyStructure(e *message.Entity, extended bool) (*imap.BodyStructure, error) {
 	bs := new(imap.BodyStructure)
 
-	mediaType, mediaParams, _ := e.Header.ContentType()
+	mediaType, mediaParams, err := e.Header.ContentType()
+	if err != nil {
+		return nil, fmt.Errorf("backendutil.FetchBodyStructure: %v", err)
+	}
 	typeParts := strings.SplitN(mediaType, "/", 2)
 	bs.MIMEType = typeParts[0]
 	if len(typeParts) == 2 {
