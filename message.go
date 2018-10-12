@@ -798,7 +798,7 @@ type BodyStructure struct {
 	Id string
 	// The Content-Description header.
 	Description string
-	// The Content-Encoding header.
+	// The Content-Transfer-Encoding header.
 	Encoding string
 	// The Content-Length header.
 	Size uint32
