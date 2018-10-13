@@ -90,7 +90,8 @@ func (cmd *Login) Handle(conn Conn) error {
 		return ErrAuthDisabled
 	}
 
-	user, err := conn.Server().Backend.Login(cmd.Username, cmd.Password)
+	remoteAddr := conn.RemoteAddr().String()
+	user, err := conn.Server().Backend.Login(ctx.Context, remoteAddr, cmd.Username, cmd.Password)
 	if err != nil {
 		return err
 	}

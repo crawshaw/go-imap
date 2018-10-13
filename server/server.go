@@ -139,12 +139,13 @@ func New(bkd backend.Backend) *Server {
 					return errors.New("Identities not supported")
 				}
 
-				user, err := bkd.Login(username, password)
+				ctx := conn.Context()
+
+				user, err := bkd.Login(ctx.Context, conn.RemoteAddr().String(), username, password)
 				if err != nil {
 					return err
 				}
 
-				ctx := conn.Context()
 				ctx.State = imap.AuthenticatedState
 				ctx.User = user
 				return nil

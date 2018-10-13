@@ -15,7 +15,7 @@ import (
 
 // Conn is a connection to a client.
 type Conn interface {
-	io.Reader
+	net.Conn
 
 	// Server returns this connection's server.
 	Server() *Server
@@ -32,8 +32,6 @@ type Conn interface {
 	// Upgrade upgrades a connection, e.g. wrap an unencrypted connection with an
 	// encrypted tunnel.
 	Upgrade(upgrader imap.ConnUpgrader) error
-	// Close closes this connection.
-	Close() error
 
 	setTLSConn(*tls.Conn)
 	silent() *bool // TODO: remove this

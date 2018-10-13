@@ -2,6 +2,7 @@
 package memory
 
 import (
+	"context"
 	"errors"
 	"time"
 
@@ -12,7 +13,7 @@ type Backend struct {
 	users map[string]*User
 }
 
-func (be *Backend) Login(username, password string) (backend.User, error) {
+func (be *Backend) Login(ctx context.Context, remoteAddr, username, password string) (backend.User, error) {
 	user, ok := be.users[username]
 	if ok && user.password == password {
 		return user, nil
