@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"crypto/tls"
 	"errors"
 	"io"
@@ -42,6 +43,10 @@ type Conn interface {
 
 // Context stores a connection's metadata.
 type Context struct {
+	// Context is the client lifetime context.
+	// The context is canceled when the client's connection closes.
+	Context context.Context
+
 	// This connection's current state.
 	State imap.ConnState
 	// If the client is logged in, the user.
@@ -66,7 +71,7 @@ type conn struct {
 	tlsConn   *tls.Conn
 	continues chan bool
 	responses chan imap.WriterTo
-	loggedOut chan struct{}
+	cancelFn  func()
 	silentVal bool
 }
 
@@ -77,7 +82,8 @@ func newConn(s *Server, c net.Conn) *conn {
 	w := imap.NewWriter(nil)
 
 	responses := make(chan imap.WriterTo)
-	loggedOut := make(chan struct{})
+
+	ctx, cancelFn := context.WithCancel(context.Background())
 
 	tlsConn, _ := c.(*tls.Conn)
 
@@ -87,14 +93,14 @@ func newConn(s *Server, c net.Conn) *conn {
 		s: s,
 		l: &sync.Mutex{},
 		ctx: &Context{
+			Context:   ctx,
 			State:     imap.ConnectingState,
 			Responses: responses,
-			LoggedOut: loggedOut,
 		},
 		tlsConn:   tlsConn,
 		continues: continues,
 		responses: responses,
-		loggedOut: loggedOut,
+		cancelFn:  cancelFn,
 	}
 
 	if s.Debug != nil {
@@ -212,7 +218,7 @@ func (c *conn) send() {
 			}
 
 			c.l.Unlock()
-		case <-c.loggedOut:
+		case <-c.Context().Context.Done():
 			return
 		}
 	}
@@ -271,7 +277,7 @@ func (c *conn) serve(conn Conn) error {
 	defer func() {
 		c.ctx.State = imap.LogoutState
 		close(c.continues)
-		close(c.loggedOut)
+		c.cancelFn()
 	}()
 
 	// Send greeting
