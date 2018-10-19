@@ -5,7 +5,10 @@ import (
 	"crypto/tls"
 	"errors"
 	"io"
+	"log"
 	"net"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -101,8 +104,14 @@ func newConn(s *Server, c net.Conn) *conn {
 		cancelFn:  cancelFn,
 	}
 
-	if s.Debug != nil {
-		conn.Conn.SetDebug(s.Debug)
+	if s.DebugDir != "" {
+		filename := filepath.Join(s.DebugDir, time.Now().Format("2006-01-02-15-04-")+c.RemoteAddr().String()+".txt")
+		f, err := os.Create(filename)
+		if err != nil {
+			log.Printf("could not create imap debug file: %v", err)
+		} else {
+			conn.Conn.SetDebug(f)
+		}
 	}
 	if s.MaxLiteralSize > 0 {
 		conn.Conn.MaxLiteralSize = s.MaxLiteralSize

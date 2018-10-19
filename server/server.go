@@ -4,7 +4,6 @@ package server
 import (
 	"crypto/tls"
 	"errors"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -111,8 +110,8 @@ type Server struct {
 	AutoLogout time.Duration
 	// Allow authentication over unencrypted connections.
 	AllowInsecureAuth bool
-	// An io.Writer to which all network activity will be mirrored.
-	Debug io.Writer
+	// A debug dir to which all network activity will be mirrored.
+	DebugDir string
 	// ErrorLog specifies an optional logger for errors accepting
 	// connections and unexpected behavior from handlers.
 	// If nil, logging goes to os.Stderr via the log package's
