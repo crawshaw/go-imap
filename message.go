@@ -916,7 +916,16 @@ func (bs *BodyStructure) Parse(fields []interface{}) error {
 		if desc, err := ParseString(fields[4]); err == nil {
 			bs.Description, _ = decodeHeader(desc)
 		}
-		bs.Encoding, _ = fields[5].(string)
+		switch str, _ := fields[5].(string); str {
+		case "BASE64":
+			bs.Encoding = "base64"
+		case "7BIT":
+			bs.Encoding = "us-ascii"
+		case "8BIT":
+			bs.Encoding = "binary"
+		case "QUOTED-PRINTABLE":
+			bs.Encoding = "quoted-printable"
+		}
 		bs.Size, _ = ParseNumber(fields[6])
 
 		end := 7
@@ -1030,7 +1039,22 @@ func (bs *BodyStructure) Format() (fields []interface{}) {
 			fields[4] = encodeHeader(bs.Description)
 		}
 		if bs.Encoding != "" {
-			fields[5] = bs.Encoding
+			var enc string
+
+			// RFC 3501 Section 9:
+			//	body-fld-enc    = (DQUOTE ("7BIT" / "8BIT" / "BINARY" /
+			//		"BASE64"/ "QUOTED-PRINTABLE") DQUOTE) / string
+			switch strings.ToLower(bs.Encoding) {
+			case "us-ascii":
+				enc = "7BIT"
+			case "base64":
+				enc = "BASE64"
+			case "quoted-printable":
+				enc = "QUOTED-PRINTABLE"
+			default:
+				enc = bs.Encoding
+			}
+			fields[5] = enc
 		}
 
 		fields[6] = bs.Size

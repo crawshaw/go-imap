@@ -442,7 +442,7 @@ var bodyStructureTests = []struct {
 	bodyStructure *BodyStructure
 }{
 	{
-		fields: []interface{}{"image", "jpeg", []interface{}{}, "<foo4%25foo1@bar.net>", "A picture of cat", "base64", "4242"},
+		fields: []interface{}{"image", "jpeg", []interface{}{}, "<foo4%25foo1@bar.net>", "A picture of cat", "BASE64", "4242"},
 		bodyStructure: &BodyStructure{
 			MIMEType:    "image",
 			MIMESubType: "jpeg",
@@ -454,7 +454,7 @@ var bodyStructureTests = []struct {
 		},
 	},
 	{
-		fields: []interface{}{"text", "plain", []interface{}{"charset", Quoted("utf-8")}, nil, nil, "us-ascii", "42", "2"},
+		fields: []interface{}{"text", "plain", []interface{}{"charset", Quoted("utf-8")}, nil, nil, "7BIT", "42", "2"},
 		bodyStructure: &BodyStructure{
 			MIMEType:    "text",
 			MIMESubType: "plain",
@@ -466,7 +466,7 @@ var bodyStructureTests = []struct {
 	},
 	{
 		fields: []interface{}{
-			"message", "rfc822", []interface{}{}, nil, nil, "us-ascii", "42",
+			"message", "rfc822", []interface{}{}, nil, nil, "7BIT", "42",
 			(&Envelope{}).Format(),
 			(&BodyStructure{}).Format(),
 			"67",
@@ -493,7 +493,7 @@ var bodyStructureTests = []struct {
 	},
 	{
 		fields: []interface{}{
-			"application", "pdf", []interface{}{}, nil, nil, "base64", "4242",
+			"application", "pdf", []interface{}{}, nil, nil, "BASE64", "4242",
 			"e0323a9039add2978bf5b49550572c7c",
 			[]interface{}{"attachment", []interface{}{"filename", Quoted("document.pdf")}},
 			[]interface{}{"en-US"}, []interface{}{},
@@ -514,8 +514,8 @@ var bodyStructureTests = []struct {
 	},
 	{
 		fields: []interface{}{
-			[]interface{}{"text", "plain", []interface{}{}, nil, nil, "us-ascii", "87", "22"},
-			[]interface{}{"text", "html", []interface{}{}, nil, nil, "us-ascii", "106", "36"},
+			[]interface{}{"text", "plain", []interface{}{}, nil, nil, "7BIT", "87", "22"},
+			[]interface{}{"text", "html", []interface{}{}, nil, nil, "7BIT", "106", "36"},
 			"alternative",
 		},
 		bodyStructure: &BodyStructure{
@@ -544,7 +544,7 @@ var bodyStructureTests = []struct {
 	},
 	{
 		fields: []interface{}{
-			[]interface{}{"text", "plain", []interface{}{}, nil, nil, "us-ascii", "87", "22"},
+			[]interface{}{"text", "plain", []interface{}{}, nil, nil, "7BIT", "87", "22"},
 			"alternative", []interface{}{"hello", Quoted("world")},
 			[]interface{}{"inline", []interface{}{}},
 			[]interface{}{"en-US"}, []interface{}{},
