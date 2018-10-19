@@ -9,13 +9,23 @@ import (
 	"github.com/emersion/go-message"
 )
 
+const plainHeader = "MIME-Version: 1.0\r\n" +
+	"Content-Type: text/plain; charset=\"UTF-8\"\r\n" +
+	"\r\n"
+
+const plainBody = "Hello, World!"
+
+const plainMsg = plainHeader + plainBody
+
 var bodyTests = []struct {
+	msg     string
 	section string
 	body    string
 }{
 	{
-		section: "BODY[]",
-		body:    testMailString,
+		msg:     plainMsg,
+		section: "BODY[1]",
+		body:    plainBody,
 	},
 	{
 		section: "BODY[1.1]",
@@ -75,7 +85,11 @@ func TestFetchBodySection(t *testing.T) {
 	for _, test := range bodyTests {
 		test := test
 		t.Run(test.section, func(t *testing.T) {
-			e, err := message.Read(strings.NewReader(testMailString))
+			msg := test.msg
+			if msg == "" {
+				msg = testMailString
+			}
+			e, err := message.Read(strings.NewReader(msg))
 			if err != nil {
 				t.Fatal("Expected no error while reading mail, got:", err)
 			}

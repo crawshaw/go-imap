@@ -19,6 +19,15 @@ func FetchBodySection(e *message.Entity, section *imap.BodySectionName) (imap.Li
 
 		mr := e.MultipartReader()
 		if mr == nil {
+			if len(section.Path) == 1 && section.Path[0] == 1 {
+				// RFC 3501 Section 6.4.5 states:
+				//
+				//	Every message has at least one part number.
+				//
+				// So treat a request for BODY[1] on a non-multipart
+				// message as a request for the entire text body.
+				break
+			}
 			return nil, errNoSuchPart
 		}
 
