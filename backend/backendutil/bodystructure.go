@@ -26,7 +26,7 @@ func FetchBodyStructure(e *message.Entity, extended bool) (*imap.BodyStructure, 
 
 	bs.Id = e.Header.Get("Content-Id")
 	bs.Description = e.Header.Get("Content-Description")
-	bs.Encoding = e.Header.Get("Content-Transfer-Encoding")
+	bs.Encoding = strings.ToLower(e.Header.Get("Content-Transfer-Encoding"))
 
 	if mr := e.MultipartReader(); mr != nil {
 		var parts []*imap.BodyStructure
