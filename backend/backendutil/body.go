@@ -54,7 +54,6 @@ func FetchBodySection(e *message.Entity, section *imap.BodySectionName) (imap.Li
 	if err != nil {
 		return nil, err
 	}
-	defer mw.Close()
 
 	switch section.Specifier {
 	case imap.TextSpecifier:
@@ -74,6 +73,10 @@ func FetchBodySection(e *message.Entity, section *imap.BodySectionName) (imap.Li
 		if _, err := io.Copy(mw, e.Body); err != nil {
 			return nil, err
 		}
+	}
+
+	if err := mw.Close(); err != nil {
+		return nil, err
 	}
 
 	var l imap.Literal = b
